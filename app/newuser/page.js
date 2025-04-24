@@ -102,14 +102,14 @@ export default function NewUser() {
             </div>
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 text-black px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
               Registrera
             </button>
           </form>
           <button
             onClick={() => router.push("/login")}
-            className="w-full mt-4 bg-gray-200 text-gray-700 text-black py-2 px-4 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
+            className="w-full mt-4 bg-gray-200 text-black py-2 px-4 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
           >
             Tillbaka till inloggning
           </button>
