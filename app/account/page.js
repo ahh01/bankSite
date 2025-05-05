@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import React from "react";
 
 export default function Account() {
@@ -8,6 +9,7 @@ export default function Account() {
   const [amount, setAmount] = useState("");
   const [token, setToken] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const router = useRouter();
 
   // Hämta användarens saldo från backend
@@ -48,6 +50,13 @@ export default function Account() {
   // Hantera insättning av pengar
   const handleDeposit = async (e) => {
     e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    if (!amount || isNaN(amount) || Number(amount) <= 0) {
+      setError("Ange ett giltigt belopp större än 0.");
+      return;
+    }
 
     try {
       const response = await fetch(
@@ -70,7 +79,7 @@ export default function Account() {
 
       const data = await response.json();
       setBalance(data.amount); // backend returnerar {amount: ...}
-      alert("Insättningen lyckades!");
+      setSuccess("Insättningen lyckades!");
       setAmount("");
     } catch (err) {
       console.error(err.message);
@@ -85,48 +94,65 @@ export default function Account() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
-          Välkommen till ditt konto
-        </h2>
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-        <p className="text-lg text-gray-700 mb-4">
-          Ditt saldo: <span className="font-bold">{balance} SEK</span>
-        </p>
-        <form onSubmit={handleDeposit} className="space-y-4">
-          <div>
-            <label
-              htmlFor="amount"
-              className="block text-sm font-medium text-gray-700"
+    <div className="flex flex-col min-h-screen bg-gray-100">
+      {/* Navigering */}
+      <nav className="w-full flex justify-center gap-8 py-4 bg-white shadow">
+        <Link href="/" className="text-blue-700 hover:underline">
+          Hem
+        </Link>
+        <Link href="/login" className="text-blue-700 hover:underline">
+          Logga in
+        </Link>
+        <Link href="/newuser" className="text-blue-700 hover:underline">
+          Skapa användare
+        </Link>
+      </nav>
+      <div className="flex items-center justify-center flex-grow">
+        <div className="w-full max-w-md bg-white rounded-lg shadow-md p-8">
+          <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+            Välkommen till ditt konto
+          </h2>
+          {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+          {success && (
+            <p className="text-green-600 text-center mb-4">{success}</p>
+          )}
+          <p className="text-lg text-gray-700 mb-4">
+            Ditt saldo: <span className="font-bold">{balance} SEK</span>
+          </p>
+          <form onSubmit={handleDeposit} className="space-y-4">
+            <div>
+              <label
+                htmlFor="amount"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Belopp att sätta in
+              </label>
+              <input
+                id="amount"
+                type="number"
+                placeholder="Ange belopp"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                className="mt-1 block w-full px-4 py-2 text-black border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                min="1"
+                step="1"
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
-              Belopp att sätta in
-            </label>
-            <input
-              id="amount"
-              type="number"
-              placeholder="Ange belopp"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              className="mt-1 block w-full px-4 py-2 text-black border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-              min="1"
-              step="1"
-              required
-            />
-          </div>
+              Sätt in pengar
+            </button>
+          </form>
           <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            onClick={handleLogout}
+            className="w-full mt-4 bg-gray-200 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
           >
-            Sätt in pengar
+            Logga ut
           </button>
-        </form>
-        <button
-          onClick={handleLogout}
-          className="w-full mt-4 bg-gray-200 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
-        >
-          Logga ut
-        </button>
+        </div>
       </div>
     </div>
   );

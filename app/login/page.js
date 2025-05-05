@@ -24,6 +24,7 @@ export default function Login() {
       }
 
       const data = await response.json();
+      console.log("Token från backend:", data.token);
 
       // Spara token i localStorage
       localStorage.setItem("token", data.token);
